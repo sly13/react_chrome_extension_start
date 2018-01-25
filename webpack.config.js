@@ -8,6 +8,14 @@ module.exports = {
     popup: "./index.js",
     content: "./src/js/content.js"
   },
+  devServer: {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization"
+    }
+  },
   //devtool: "source-map",
   output: {
     path: path.join(__dirname, "build"),
@@ -49,7 +57,18 @@ module.exports = {
     }),
     new CopyWebpackPlugin([
       { from: "./src/manifest.json" },
-      { from: "./src/css/content.css" }
+      { from: "./binance_logo.png" },
+      { from: "./src/css/content.css" },
+      {
+        context: "./materialize",
+        from: "**/*",
+        to: "./materialize/"
+      },
+      {
+        context: "./src/icons",
+        from: "**/*",
+        to: "./icons/"
+      }
       //{ context: "./src/assets", from: "icon-**", to: "assets" }
     ])
   ]

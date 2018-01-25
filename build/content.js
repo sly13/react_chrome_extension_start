@@ -60,18 +60,48 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = 34);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 28:
+/***/ 34:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-console.log("here");
+$(document).ready(function () {
+  var amount = $(".chargeWithdraw-title ul li.total").text().replace(/\r?\n/g, "").replace(/\s/g, "").replace("$", "").split("/", 2);
+
+  var usd = amount[1];
+  var btc = amount[0].replace(/[^0-9]/g, "").replace("0", "0.");
+
+  var btcPrice = (usd / btc).toFixed(2);
+
+  setTimeout(calculate, 1000);
+  function calculate() {
+    var all = $(".equalValue").each(function (index) {
+      if (index == 0) {
+        return;
+      }
+
+      var btcAmount = parseFloat($(this).text());
+      var usdAmount = (btcAmount * btcPrice).toFixed(2);
+      var valueUsdCurrency = $(this).parent().find(".total");
+
+      var currencyAmount = valueUsdCurrency.text().split(",").join("");
+
+      if (currencyAmount > 0) {
+        valueUsdCurrency.html(currencyAmount + " / <span class='transMoney'>" + (usdAmount / currencyAmount).toFixed(2) + "$</span>");
+      } else {
+        valueUsdCurrency.html(currencyAmount + " / <span class='transMoney'>0.00$</span>");
+      }
+
+      $(this).html(btcAmount + " / <span class='transMoney'>" + usdAmount + "$</span>");
+    });
+  }
+});
 
 /***/ })
 
