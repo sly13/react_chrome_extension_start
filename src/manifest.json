@@ -2,8 +2,8 @@
   "manifest_version": 2,
   "name": "Trade Helper for Binance",
   "description":
-    "With the help of the extension you will see the value in dollars of the purchased crypto currency.",
-  "version": "0.01",
+    "Add the USD value to the output of the BTC value column on Binance. Also you can convert BTC to USD at the Binance rate.",
+  "version": "1.4",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -13,9 +13,9 @@
   ],
   "browser_action": {
     "default_popup": "popup.html",
-    // "default_icon": "icons/icon_64.png",
+    "default_icon": "icons/icon_64.png",
     "default_title": "Trade Helper for Binance"
   },
-  "permissions": ["tabs"]
-  //"icons": { "128": "icons/icon_128.png" }
+  "permissions": ["tabs"],
+  "icons": { "128": "icons/icon_128.png" }
 }
