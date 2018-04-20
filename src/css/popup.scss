@@ -18,3 +18,32 @@ a {
 .input-field.col label {
     left: 0;
 }
+
+#btc,
+#eth {
+    color: #202223;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0 24px;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-transition: color 0.28s ease;
+    transition: color 0.28s ease;
+    cursor: pointer;
+}
+
+#btc.active,
+#eth.active {
+    color: #f2b940;
+}
+
+.row {
+    margin-bottom: 0 !important;
+}
+
+.input-field label {
+    text-align: center;
+    padding-left: 58px !important;
+}

@@ -18321,7 +18321,9 @@ var App = function (_Component) {
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = App.__proto__ || Object.getPrototypeOf(App)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       currency: "",
-      symbol: ""
+      symbol: "",
+      currencyETH: "",
+      symbolETH: ""
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -18338,14 +18340,34 @@ var App = function (_Component) {
           symbol: jsondata.symbol
         });
       });
+
+      fetch("https://blablaflat.net/api/binance/get-currency/?currency=ETHUSDT").then(function (response) {
+        return response.json();
+      }).then(function (jsondata) {
+        return _this2.setState({
+          currencyETH: jsondata.price,
+          symbolETH: jsondata.symbol
+        });
+      });
     }
   }, {
     key: "render",
     value: function render() {
+      var _state = this.state,
+          currency = _state.currency,
+          symbol = _state.symbol,
+          currencyETH = _state.currencyETH,
+          symbolETH = _state.symbolETH;
+
       return _react2.default.createElement(
         "div",
         null,
-        _react2.default.createElement(_Binance2.default, { price: this.state.currency, symbol: this.state.symbol })
+        _react2.default.createElement(_Binance2.default, {
+          price: currency,
+          symbol: symbol,
+          currencyETH: currencyETH,
+          symbolETH: symbolETH
+        })
       );
     }
   }]);
@@ -18969,9 +18991,11 @@ var Binance = function (_Component) {
       price: 0,
       symbol: "",
       preload: false,
-      error: false
-    }, _this.handleCalc = function (e) {
-      var btcValue = _this.testInput.value;
+      error: false,
+      activeBTC: true,
+      activeETH: false
+    }, _this.handleCalcBTC = function (e) {
+      var btcValue = _this.btcInput.value;
       if (isNaN(btcValue)) {
         e.preventDefault();
         _this.setState({
@@ -18998,6 +19022,48 @@ var Binance = function (_Component) {
           });
         });
       }
+    }, _this.handleCalcETH = function (e) {
+      var ethValue = _this.ethInput.value;
+      if (isNaN(ethValue)) {
+        e.preventDefault();
+        _this.setState({
+          error: true
+        });
+      } else {
+        _this.setState({
+          price: 0,
+          total: 0,
+          preload: true
+        });
+
+        fetch("https://blablaflat.net/api/binance/get-currency/?currency=ETHUSDT").then(function (response) {
+          return response.json();
+        }).then(function (jsondata) {
+          _this.setState({
+            price: jsondata.price,
+            symbol: jsondata.symbol,
+            preload: false
+          });
+
+          _this.setState({
+            total: (ethValue * jsondata.price).toFixed(2)
+          });
+        });
+      }
+    }, _this.handleSymbolBTC = function () {
+      _this.setState({
+        activeBTC: true,
+        activeETH: false,
+        price: 0,
+        total: 0
+      });
+    }, _this.handleSymbolETH = function () {
+      _this.setState({
+        activeETH: true,
+        activeBTC: false,
+        price: 0,
+        total: 0
+      });
     }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
@@ -19015,52 +19081,149 @@ var Binance = function (_Component) {
         null,
         _react2.default.createElement(
           "div",
-          { className: "card-content center-align" },
+          { "class": "row" },
           _react2.default.createElement(
             "div",
-            { className: "input-field col s6" },
-            _react2.default.createElement("input", {
-              defaultValue: "0",
-              ref: function ref(input) {
-                return _this2.testInput = input;
-              },
-              type: "text",
-              name: "btc_value",
-              className: classError + " center-align "
-            }),
+            { "class": "col s12" },
             _react2.default.createElement(
-              "label",
-              { className: "active", htmlFor: "btc_value" },
-              "Enter BTC value"
-            ),
-            _react2.default.createElement(
-              "a",
-              {
-                className: "waves-effect waves-light btn grey darken-4",
-                onClick: this.handleCalc
-              },
+              "ul",
+              { "class": "tabs" },
               _react2.default.createElement(
-                "i",
-                { className: "material-icons left" },
-                "loop"
+                "li",
+                { "class": "tab col s3" },
+                _react2.default.createElement(
+                  "div",
+                  {
+                    id: "btc",
+                    "class": this.state.activeBTC && "active",
+                    onClick: this.handleSymbolBTC
+                  },
+                  "BTC"
+                )
               ),
-              "Calculate"
+              _react2.default.createElement(
+                "li",
+                { "class": "tab col s3" },
+                _react2.default.createElement(
+                  "div",
+                  {
+                    id: "eth",
+                    "class": this.state.activeETH && "active",
+                    onClick: this.handleSymbolETH
+                  },
+                  "ETH"
+                )
+              )
             )
           )
         ),
-        _react2.default.createElement(
+        this.state.activeBTC && _react2.default.createElement(
           "div",
-          { className: "card-action" },
-          this.state.preload == true ? _react2.default.createElement(_Preloader2.default, null) : _react2.default.createElement(
+          null,
+          _react2.default.createElement(
             "div",
-            { className: "center-align" },
-            price != 0 ? "1 BTC = " + price + " $" : "",
+            { className: "card-content center-align" },
             _react2.default.createElement(
-              "h5",
-              null,
-              "Total ",
-              this.state.total,
-              "$"
+              "div",
+              { className: "input-field col s6" },
+              _react2.default.createElement("input", {
+                defaultValue: "0",
+                ref: function ref(input) {
+                  return _this2.btcInput = input;
+                },
+                type: "text",
+                name: "btc_value",
+                className: classError + " center-align "
+              }),
+              _react2.default.createElement(
+                "label",
+                { className: "active", htmlFor: "btc_value" },
+                "Enter BTC value"
+              ),
+              _react2.default.createElement(
+                "a",
+                {
+                  className: "waves-effect waves-light btn grey darken-4",
+                  onClick: this.handleCalcBTC
+                },
+                _react2.default.createElement(
+                  "i",
+                  { className: "material-icons left" },
+                  "loop"
+                ),
+                "Calculate"
+              )
+            )
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "card-action" },
+            this.state.preload == true ? _react2.default.createElement(_Preloader2.default, null) : _react2.default.createElement(
+              "div",
+              { className: "center-align" },
+              price != 0 ? "1 BTC = " + price + " $" : "",
+              _react2.default.createElement(
+                "h5",
+                null,
+                "Total ",
+                this.state.total,
+                "$"
+              )
+            )
+          )
+        ),
+        this.state.activeETH && _react2.default.createElement(
+          "div",
+          null,
+          _react2.default.createElement(
+            "div",
+            { className: "card-content center-align" },
+            _react2.default.createElement(
+              "div",
+              { className: "input-field col s6" },
+              _react2.default.createElement("input", {
+                defaultValue: "0",
+                ref: function ref(input) {
+                  return _this2.ethInput = input;
+                },
+                type: "text",
+                name: "eth_value",
+                className: classError + " center-align "
+              }),
+              _react2.default.createElement(
+                "label",
+                { className: "active", htmlFor: "eth_value" },
+                "Enter ETH value"
+              ),
+              _react2.default.createElement(
+                "a",
+                {
+                  className: "waves-effect waves-light btn grey darken-4",
+                  onClick: this.handleCalcETH
+                },
+                _react2.default.createElement(
+                  "i",
+                  { className: "material-icons left" },
+                  "loop"
+                ),
+                "Calculate"
+              )
+            )
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "card-action" },
+            this.state.preload == true ? _react2.default.createElement(_Preloader2.default, null) : _react2.default.createElement(
+              "div",
+              { className: "center-align" },
+              price != 0 ? "1 ETH = " + price + " $" : "",
+              _react2.default.createElement(
+                "h5",
+                null,
+                "Total ",
+                this.state.total,
+                "$"
+              )
             )
           )
         )

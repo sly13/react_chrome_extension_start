@@ -5,7 +5,9 @@ import Binance from "./Binance";
 class App extends Component {
   state = {
     currency: "",
-    symbol: ""
+    symbol: "",
+    currencyETH: "",
+    symbolETH: ""
   };
 
   componentDidMount() {
@@ -17,12 +19,27 @@ class App extends Component {
           symbol: jsondata.symbol
         })
       );
+
+    fetch("https://blablaflat.net/api/binance/get-currency/?currency=ETHUSDT")
+      .then(response => response.json())
+      .then(jsondata =>
+        this.setState({
+          currencyETH: jsondata.price,
+          symbolETH: jsondata.symbol
+        })
+      );
   }
 
   render() {
+    const { currency, symbol, currencyETH, symbolETH } = this.state;
     return (
       <div>
-        <Binance price={this.state.currency} symbol={this.state.symbol} />
+        <Binance
+          price={currency}
+          symbol={symbol}
+          currencyETH={currencyETH}
+          symbolETH={symbolETH}
+        />
         {/* <Fetch url="https://blablaflat.net/api/binance/get-currency/?currency=BTCUSDT">
           <TestComponent />
         </Fetch> */}

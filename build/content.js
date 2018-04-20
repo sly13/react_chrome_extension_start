@@ -74,49 +74,29 @@
 //import axios from "axios";
 
 window.addEventListener("load", myMain, false);
-function myMain(evt) {
-  console.log("downloaded");
 
+function myMain(evt) {
   var amount = $(".chargeWithdraw-title ul li.total").text().replace(/\r?\n/g, "").replace(/\s/g, "").replace("$", "").split("/", 2);
 
-  var usd = amount[1];
-  var btc = amount[0].replace(/[^0-9]/g, "").replace("0", "0.");
-  var btcPrice = (usd / btc).toFixed(2);
-  console.log("price", usd, btc, btcPrice);
+  fetch("https://blablaflat.net/api/binance/get-currency/?currency=BTCUSDT").then(function (response) {
+    return response.json();
+  }).then(function (jsondata) {
+    var usd = amount[1];
+    var btcPrice = jsondata.price;
 
-  var all = $(".equalValue").each(function (index) {
-    if (index == 0) {
-      return;
-    }
+    var all = $(".equalValue").each(function (index) {
+      if (index == 0) {
+        return;
+      }
+      var btcAmount = parseFloat($(this).text());
+      var usdAmount = (btcAmount * btcPrice).toFixed(2);
+      var valueUsdCurrency = $(this).parent().find(".total");
 
-    var btcAmount = parseFloat($(this).text());
-    var usdAmount = (btcAmount * btcPrice).toFixed(2);
-    var valueUsdCurrency = $(this).parent().find(".total");
+      var currencyAmount = valueUsdCurrency.text().split(",").join("");
 
-    var currencyAmount = valueUsdCurrency.text().split(",").join("");
-
-    $(this).html(btcAmount + " / <span class='transMoney'>" + usdAmount + "$</span>");
+      $(this).html(btcAmount + " / <span class='transMoney'>" + usdAmount + "$</span>");
+    });
   });
-
-  // async function test() {
-  //   console.log("start");
-  //   const prices = await getPrice();
-  //   console.log(prices);
-  // }
-
-  // function getPrice() {
-  //   axios
-  //     .get("https://api.binance.com//api/v1/ticker/allPrices")
-  //     .then(res => {
-  //       const transaction = res.data;
-  //       console.log(transaction);
-  //     })
-  //     .catch(error => {
-  //       console.log("ERROR: " + error.response);
-  //     });
-  // }
-
-  // test();
 }
 
 /***/ })
