@@ -2,8 +2,8 @@
   "manifest_version": 2,
   "name": "Trade Helper for Binance",
   "description":
-    "Add the USD value to the output of the BTC value column on Binance. Also you can convert BTC to USD at the Binance rate.",
-  "version": "1.4",
+    "Add the USD value to the output of the BTC value column on Binance. Also you can convert BTC and ETH to USD at the Binance rate.",
+  "version": "1.5",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
